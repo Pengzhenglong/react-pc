@@ -1,10 +1,30 @@
-import { Card, Form, Input, Checkbox, Button } from "antd";
+import { Card, Form, Input, Checkbox, Button, message } from "antd";
 import logo from "@/assets/logo.png";
 import "./index.scss";
+import { useStore } from "@/store/index";
+import { useNavigate } from "react-router-dom";
 const Login = () => {
-  const onFinish = (values) => {
+  const { loginStore } = useStore();
+  const navigate = useNavigate();
+
+  async function onFinish(values) {
     console.log("Success:", values);
-  };
+    // 登录
+    const { mobile, code } = values;
+    try {
+      await loginStore.getToken({
+        mobile,
+        code,
+      });
+      navigate("/", { replace: true });
+      message.success("登录成功");
+    } catch (e) {
+      message.error(e.response?.data?.message || "登录失败");
+    }
+
+    // 跳转首页
+    // Link标签的replace属性，使用该属性，跳转路由将不会在history中push一个浏览记录，而是取代上一个浏览记录。 不能够回退
+  }
 
   return (
     <>
@@ -14,11 +34,11 @@ const Login = () => {
           {/* Form */}
           <Form
             validateTrigger={["onBlur", "onChange"]}
-            onFinish={ onFinish }
+            onFinish={onFinish}
             initialValues={{
-              mobile: '13911111111',
-              code: '246810',
-              remember: true
+              mobile: "13911111111",
+              code: "246810",
+              remember: true,
             }}
           >
             <Form.Item

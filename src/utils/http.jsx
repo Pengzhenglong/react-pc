@@ -18,7 +18,7 @@ http.interceptors.response.use(
   (response) => {
     // 2xx范围内的状态码都会触发该函数
     // 对响应数据做点什么
-    return response.data;
+    return response.data.data;
   },
   (error) => {
     // 超出2xx范围的状态码都会触发该函数
