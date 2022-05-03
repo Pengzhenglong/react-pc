@@ -1,8 +1,8 @@
 import { makeAutoObservable } from "mobx";
-import { http } from "@/utils";
+import { http, setToken, getToken } from "@/utils";
 
 class LoginStore {
-  token = "";
+  token = getToken() || "";
   constructor() {
     // 响应式
     makeAutoObservable(this);
@@ -15,7 +15,10 @@ class LoginStore {
     });
     // 字符串化
     console.log("res" + JSON.stringify(res));
+    // 存入token
     this.token = res.token;
+    //存入ls
+    setToken(this.token);
   };
 }
 
