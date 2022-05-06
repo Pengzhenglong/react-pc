@@ -1,11 +1,13 @@
 import React from "react";
 import LoginStore from "./login.Store";
+import UserStore from "./user.Store";
 // 将所有的模块做统一的处理
 // 导出一个统一的方法  useStore
 class RootStore {
   // 组合模块
   constructor() {
     this.loginStore = new LoginStore();
+    this.userStore = new UserStore();
   }
 }
 //实例化根

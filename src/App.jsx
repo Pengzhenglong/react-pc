@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HistoryRouter, history } from "./utils/history";
 import Login from "@/pages/Login/index.jsx";
 import GeekLayout from "@/pages/Layout/index.jsx";
 import { AuthComponent } from "./components/AuthComponents";
@@ -7,7 +8,7 @@ import Home from "@/pages/Home/index.jsx";
 import Publish from "@/pages/Publish/index.jsx";
 function App() {
   return (
-    <BrowserRouter>
+    <HistoryRouter history={history}>
       <div className="App">
         <Routes>
           {/* 需要鉴权的路由 */}
@@ -29,7 +30,7 @@ function App() {
           <Route path="/login" element={<Login />}></Route>
         </Routes>
       </div>
-    </BrowserRouter>
+    </HistoryRouter>
   );
 }
 

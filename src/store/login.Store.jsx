@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { http, setToken, getToken } from "@/utils";
+import { http, setToken, getToken, removeToken } from "@/utils";
 
 class LoginStore {
   token = getToken() || "";
@@ -19,6 +19,11 @@ class LoginStore {
     this.token = res.token;
     //存入ls
     setToken(this.token);
+  };
+  // 退出登录
+  logOut = () => {
+    this.token = "";
+    removeToken();
   };
 }
 

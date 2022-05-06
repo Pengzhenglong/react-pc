@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getToken } from "../utils/index";
+import { getToken,removeToken } from "../utils/index";
 const http = axios.create({
   baseURL: "http://geek.itheima.net/v1_0",
   timeout: 5000,
@@ -27,6 +27,12 @@ http.interceptors.response.use(
   (error) => {
     // 超出2xx范围的状态码都会触发该函数
     // 对响应数据做点什么
+    if (error.response.status === 401) {
+      // 删除token
+      removeToken();
+      // 跳转到登录页
+      history.push("/login");
+    }
     return Promise.reject(error);
   }
 );
