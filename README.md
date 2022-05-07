@@ -1,10 +1,10 @@
 ### react+vite
 
-### npm init vite@latest
+### pnpm init vite@latest
 
-### npm  i
+### pnpm  i
 
-### npm  run dev
+### pnpm  run dev
 
 #### 参考地址
 
