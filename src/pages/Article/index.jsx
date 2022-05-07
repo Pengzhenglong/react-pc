@@ -17,14 +17,14 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import img404 from "@/assets/error.png";
 import { useState, useEffect } from "react";
 import { http } from "@/utils";
-import { use } from "echarts";
+
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const Article = () => {
-  const onFinish = (values) => {
-    console.log(values);
-  };
+  // const onFinish = (values) => {
+  //   console.log(values);
+  // };
   const [channels, setChannels] = useState([]);
   useEffect(() => {
     async function fetchChannels() {
@@ -64,7 +64,25 @@ const Article = () => {
     }
     fetchArticle();
   }, [params]);
-
+  // 筛选功能
+  const onSearch = (values) => {
+    const { status, channels_id, date } = values;
+    // 格式化表单数据
+    const _params = {};
+    //格式化status
+    if (channels_id) {
+      _params.channels_id = channels_id;
+    }
+    if (date) {
+      _params.begin_pubdate = date[0].format("YYYY-MM-DD");
+      _params.end_pubdate = date[1].format("YYYY-MM-DD");
+    }
+    // 修改params参数  触发接口再次启动
+    setParams({
+      ...params,
+      ..._params,
+    });
+  };
   const columns = [
     {
       title: "封面",
@@ -147,7 +165,7 @@ const Article = () => {
         }
         style={{ marginBottom: 20 }}
       >
-        <Form initialValues={{ status: null }} onFinish={onFinish}>
+        <Form initialValues={{ status: null }} onFinish={onSearch}>
           <Form.Item label="状态" name="status">
             <Radio.Group>
               <Radio value={null}>全部</Radio>
