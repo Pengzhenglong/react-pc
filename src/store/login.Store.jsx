@@ -8,16 +8,15 @@ class LoginStore {
     makeAutoObservable(this);
   }
   getToken = async ({ mobile, code }) => {
-    // 调用接口
+    // 调用登录接口
     const res = await http.post("http://geek.itheima.net/v1_0/authorizations", {
       mobile,
       code,
     });
-    // 字符串化
-    console.log("res" + JSON.stringify(res));
     // 存入token
+    console.log(res);
     this.token = res.token;
-    //存入ls
+    // 存入ls
     setToken(this.token);
   };
   // 退出登录

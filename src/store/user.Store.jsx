@@ -6,9 +6,12 @@ class UserStore {
   constructor() {
     makeAutoObservable(this);
   }
-  async getUserInfo() {
-    const res = await http.get("/user/profile");
-    this.userInfo = res.data;
+  getUserInfo = async () => {
+    // 调用接口获取数据
+    const res = await http.get('/user/profile')
+    // console.log(this.res.data);
+    this.userInfo = res.data
+    // console.log(this.userInfo);
   }
 }
 

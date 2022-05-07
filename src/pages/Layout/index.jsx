@@ -18,10 +18,7 @@ const GeekLayout = () => {
   // 获取用户的数据
   const { userStore, loginStore } = useStore();
   useEffect(() => {
-    try {
-      userStore.getUserInfo();
-      console.log(userStore.userInfo.name);
-    } catch {}
+    userStore.getUserInfo();
   }, [userStore]);
   // 退出登录
   const navigate = useNavigate();
@@ -34,7 +31,7 @@ const GeekLayout = () => {
       <Header className="header">
         <div className="logo" />
         <div className="user-info">
-          <span className="user-name">1111</span>
+          <span className="user-name">1111111111</span>
           <span className="user-logout">
             <Popconfirm
               title="是否确认退出？"
