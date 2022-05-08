@@ -83,6 +83,14 @@ const Article = () => {
       ..._params,
     });
   };
+  // 文章参数管理
+  const pageChange = (page) => {
+    // 每当拿到当前页数  修改params引起接口更新
+    setParams({
+      ...params,
+      page,
+    });
+  };
   const columns = [
     {
       title: "封面",
@@ -200,7 +208,18 @@ const Article = () => {
       </Card>
 
       <Card title={`根据筛选条件共查询到 ${article.count} 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={article.list} />
+        <Table
+          rowKey="id"
+          columns={columns}
+          dataSource={article.list}
+          pagination={{
+            position: ["bottomCenter"],
+            current: params.page,
+            pageSize: params.per_page,
+            total: article.count,
+            onChange: pageChange,
+          }}
+        />
       </Card>
     </div>
   );
