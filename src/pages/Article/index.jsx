@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Card,
   Breadcrumb,
@@ -7,6 +7,7 @@ import {
   Radio,
   DatePicker,
   Select,
+  Popconfirm,
 } from "antd";
 // import "moment/locale/zh-cn";
 import locale from "antd/es/date-picker/locale/zh_CN";
@@ -70,6 +71,7 @@ const Article = () => {
     // 格式化表单数据
     const _params = {};
     //格式化status
+    _params.status = status;
     if (channels_id) {
       _params.channels_id = channels_id;
     }
@@ -90,6 +92,20 @@ const Article = () => {
       ...params,
       page,
     });
+  };
+  // 删除文章
+  const delArticle = async (data) => {
+    await http.delete(`/mp/articles/${data.id}`);
+    // 删除更新列表
+    setParams({
+      ...params,
+      page: 1,
+    });
+  };
+  // 编辑跳转
+  const navigate = useNavigate();
+  const goPublish = (data) => {
+    navigate(`/publish?id=${data.id}`);
   };
   const columns = [
     {
@@ -133,13 +149,25 @@ const Article = () => {
       render: (data) => {
         return (
           <Space size="middle">
-            <Button type="primary" shape="circle" icon={<EditOutlined />} />
             <Button
               type="primary"
-              danger
               shape="circle"
-              icon={<DeleteOutlined />}
+              icon={<EditOutlined />}
+              onClick={() => goPublish(data)}
             />
+            <Popconfirm
+              title="确认删除该条文章吗?"
+              onConfirm={() => delArticle(data)}
+              okText="确认"
+              cancelText="取消"
+            >
+              <Button
+                type="primary"
+                danger
+                shape="circle"
+                icon={<DeleteOutlined />}
+              />
+            </Popconfirm>
           </Space>
         );
       },
