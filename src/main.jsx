@@ -5,7 +5,7 @@ import "./index.scss";
 import './App.css';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <App />
-  </React.StrictMode>
+  // </React.StrictMode>
 );
