@@ -9,6 +9,7 @@ import {
   Select,
   Popconfirm,
 } from "antd";
+import { observer } from "mobx-react";
 // import "moment/locale/zh-cn";
 import locale from "antd/es/date-picker/locale/zh_CN";
 import "./index.scss";
@@ -18,7 +19,7 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import img404 from "@/assets/error.png";
 import { useState, useEffect } from "react";
 import { http } from "@/utils";
-
+import { useStore } from "@/store";
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -26,16 +27,19 @@ const Article = () => {
   // const onFinish = (values) => {
   //   console.log(values);
   // };
-  const [channels, setChannels] = useState([]);
-  useEffect(() => {
-    async function fetchChannels() {
-      const res = await http.get("/channels");
-      console.log(res);
-      setChannels(res.channels);
-    }
-    fetchChannels();
-  }, []);
-
+  // 频道管理
+  // useEffect的依赖非常重要，非常容易出现循环执行
+  // 在里面写了引起组件重新渲染的逻辑，重新渲染又会导致useEffect重新执行
+  // const [channels, setChannels] = useState([]);
+  // useEffect(() => {
+  //   async function fetchChannels() {
+  //     const res = await http.get("/channels");
+  //     console.log(res);
+  //     setChannels(res.channels);
+  //   }
+  //   fetchChannels();
+  // }, []);
+  const { channelStore } = useStore();
   // 文章参数管理
   const [article, setArticle] = useState({
     list: [],
@@ -214,7 +218,7 @@ const Article = () => {
 
           <Form.Item label="频道" name="channel_id">
             <Select placeholder="请选择文章频道" style={{ width: 120 }}>
-              {channels.map((channel) => (
+              {channelStore.channelList.map((channel) => (
                 <Option value={channel.id} key={channel.id}>
                   {channel.name}
                 </Option>
@@ -253,4 +257,4 @@ const Article = () => {
   );
 };
 
-export default Article;
+export default observer(Article);

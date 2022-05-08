@@ -1,6 +1,7 @@
 import React from "react";
 import LoginStore from "./login.Store";
 import UserStore from "./user.Store";
+import ChannelStore from "./channel.Store";
 // 将所有的模块做统一的处理
 // 导出一个统一的方法  useStore
 class RootStore {
@@ -8,6 +9,7 @@ class RootStore {
   constructor() {
     this.loginStore = new LoginStore();
     this.userStore = new UserStore();
+    this.channelStore = new ChannelStore();
   }
 }
 //实例化根

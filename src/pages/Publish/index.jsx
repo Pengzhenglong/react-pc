@@ -15,10 +15,13 @@ import "./index.scss";
 // import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { useStore } from "@/store";
+import { observer } from "mobx-react";
 const { Option } = Select;
 
 const Publish = () => {
   // const [value, setValue] = useState("");
+  const { channelStore } = useStore();
   return (
     <div className="publish">
       <Card
@@ -53,7 +56,12 @@ const Publish = () => {
             rules={[{ required: true, message: "请选择文章频道" }]}
           >
             <Select placeholder="请选择文章频道" style={{ width: 400 }}>
-              <Option value={0}>推荐</Option>
+              {channelStore.channelList.map((channel) => (
+                <Option value={channel.id} key={channel.id}>
+                  {channel.name}
+                </Option>
+              ))}
+              {/* <Option value={0}>推荐</Option> */}
             </Select>
           </Form.Item>
 
@@ -97,4 +105,4 @@ const Publish = () => {
   );
 };
 
-export default Publish;
+export default observer(Publish);

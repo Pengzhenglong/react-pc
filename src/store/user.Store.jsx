@@ -8,11 +8,12 @@ class UserStore {
   }
   getUserInfo = async () => {
     // 调用接口获取数据
-    const res = await http.get('/user/profile')
-    // console.log(this.res.data);
-    this.userInfo = res.data
-    // console.log(this.userInfo);
-  }
+    const res = await http.get("/user/profile");
+    console.log(res);
+    // console.log("userInfo" + JSON.stringify(res));
+    this.userInfo = res;
+    console.log("mobile" + this.userInfo.mobile);
+  };
 }
 
 export default UserStore;
