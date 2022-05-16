@@ -12,18 +12,25 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import "./index.scss";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useStore } from "@/store";
 import { observer } from "mobx-react";
 import { http } from "@/utils";
+import { useSearchParams } from "react-router-dom";
 const { Option } = Select;
 
 const Publish = () => {
+  const [params] = useSearchParams();
+  // console.log(params);
+  const articleId = params.get("id");
   // const [value, setValue] = useState("");
   const { channelStore } = useStore();
   const [fileList, setFileList] = useState([]);
+  // 暂存图片显示
+  // 声明一个暂存仓库
+  const fileListRef = useRef([]);
   // 上传成功回调
   const onUploadChange = (info) => {
     console.log(info);
@@ -36,12 +43,24 @@ const Publish = () => {
       return file;
     });
     setFileList(fileList);
+    // 2.上传图片时，将所有图片存储到ref中
+    fileListRef.current = fileList;
+    console.log("fileListRef" + fileListRef);
   };
   const [imgCount, setImgCount] = useState(1);
   const changeType = (e) => {
     console.log(e);
+    // 使用原始数据作为判断条件
     const count = e.target.value;
     setImgCount(count);
+    if (count === 1) {
+      // 单图，只展示第一张
+      const firstImg = fileListRef.current[0];
+      setFileList(!firstImg ? [] : [firstImg]);
+    } else if (count === 3) {
+      // 三图，展示三张
+      setFileList(fileListRef.current);
+    }
   };
   const onFinish = async (value) => {
     console.log(fileList);
@@ -59,6 +78,7 @@ const Publish = () => {
     console.log(params);
     await http.post("/mp/articles?draft=false", params);
   };
+
   return (
     <div className="publish">
       <Card
@@ -67,7 +87,9 @@ const Publish = () => {
             <Breadcrumb.Item>
               <Link to="/">首页</Link>
             </Breadcrumb.Item>
-            <Breadcrumb.Item>发布文章</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {articleId ? "修改文章" : "发布文章"}
+            </Breadcrumb.Item>
           </Breadcrumb>
         }
       >
@@ -140,7 +162,7 @@ const Publish = () => {
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
               <Button size="large" type="primary" htmlType="submit">
-                发布文章
+                {articleId ? "修改文章" : "发布文章"}
               </Button>
             </Space>
           </Form.Item>
