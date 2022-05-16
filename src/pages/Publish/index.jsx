@@ -12,16 +12,53 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import "./index.scss";
-// import React, { useState } from "react";
+import { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useStore } from "@/store";
 import { observer } from "mobx-react";
+import { http } from "@/utils";
 const { Option } = Select;
 
 const Publish = () => {
   // const [value, setValue] = useState("");
   const { channelStore } = useStore();
+  const [fileList, setFileList] = useState([]);
+  // 上传成功回调
+  const onUploadChange = (info) => {
+    console.log(info);
+    const fileList = info.fileList.map((file) => {
+      if (file.response) {
+        return {
+          url: file.response.data.url,
+        };
+      }
+      return file;
+    });
+    setFileList(fileList);
+  };
+  const [imgCount, setImgCount] = useState(1);
+  const changeType = (e) => {
+    console.log(e);
+    const count = e.target.value;
+    setImgCount(count);
+  };
+  const onFinish = async (value) => {
+    console.log(fileList);
+    const { title, content, channel_id, type } = value;
+    const params = {
+      title,
+      content,
+      channel_id,
+      type,
+      cover: {
+        type: type,
+        images: fileList.map((item) => item.url),
+      },
+    };
+    console.log(params);
+    await http.post("/mp/articles?draft=false", params);
+  };
   return (
     <div className="publish">
       <Card
@@ -39,9 +76,10 @@ const Publish = () => {
         <Form
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
+          onFinish={onFinish}
           // initialValues={{ type: 1 }}
           // 注意：此处需要为富文本编辑表示的 content 文章内容设置默认值
-          initialValues={{ content: "d'sa'da's'd" }}
+          initialValues={{ content: "" }}
         >
           <Form.Item
             label="标题"
@@ -67,22 +105,29 @@ const Publish = () => {
 
           <Form.Item label="封面">
             <Form.Item name="type">
-              <Radio.Group>
+              <Radio.Group onChange={changeType}>
                 <Radio value={1}>单图</Radio>
                 <Radio value={3}>三图</Radio>
                 <Radio value={0}>无图</Radio>
               </Radio.Group>
             </Form.Item>
-            <Upload
-              name="image"
-              listType="picture-card"
-              className="avatar-uploader"
-              showUploadList
-            >
-              <div style={{ marginTop: 8 }}>
-                <PlusOutlined />
-              </div>
-            </Upload>
+            {imgCount > 0 && (
+              <Upload
+                name="image"
+                listType="picture-card"
+                className="avatar-uploader"
+                showUploadList
+                action="http://geek.itheima.net/v1_0/upload"
+                fileList={fileList}
+                onChange={onUploadChange}
+                maxCount={imgCount}
+                multiple={imgCount > 1}
+              >
+                <div style={{ marginTop: 8 }}>
+                  <PlusOutlined />
+                </div>
+              </Upload>
+            )}
           </Form.Item>
           <Form.Item
             label="内容"
