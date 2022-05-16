@@ -12,7 +12,7 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import "./index.scss";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useStore } from "@/store";
@@ -23,6 +23,7 @@ const { Option } = Select;
 
 const Publish = () => {
   const [params] = useSearchParams();
+  const form = useRef(null);
   // console.log(params);
   const articleId = params.get("id");
   // const [value, setValue] = useState("");
@@ -76,9 +77,38 @@ const Publish = () => {
       },
     };
     console.log(params);
-    await http.post("/mp/articles?draft=false", params);
+    if (articleId) {
+      // 编辑
+      await http.put(`/mp/articles/${articleId}?draft=false`, params);
+    } else {
+      // 新增
+      await http.post("/mp/articles?draft=false", params);
+    }
   };
 
+  //  数据回显
+  useEffect(() => {
+    async function getArticle() {
+      const res = await http.get(`/mp/articles/${articleId}`);
+      console.log(res);
+      const { cover, ...formValue } = res;
+      // 动态设置表单数据
+      form.current.setFieldsValue({ ...formValue, type: cover.type });
+      // 格式化封面图片数据
+      const fileList = cover.images.map((item) => {
+        return {
+          url: item,
+        };
+      });
+      setFileList(fileList);
+      setImgCount(cover.type);
+      fileListRef.current = fileList;
+    }
+    if (articleId) {
+      getArticle();
+      console.log(form.current);
+    }
+  }, [articleId]);
   return (
     <div className="publish">
       <Card
@@ -102,6 +132,7 @@ const Publish = () => {
           // initialValues={{ type: 1 }}
           // 注意：此处需要为富文本编辑表示的 content 文章内容设置默认值
           initialValues={{ content: "" }}
+          ref={form}
         >
           <Form.Item
             label="标题"
